@@ -1,5 +1,5 @@
-WebGL path Tracer
-1. Implementation
+### WebGL path Tracer
+##1. Implementation
 1.1 WebGL
 use webGL directly. 
 Math library: 1)glMatrix: https://github.com/toji/gl-matrix or 2)Sylvester:https://github.com/jcoglan/sylvester
