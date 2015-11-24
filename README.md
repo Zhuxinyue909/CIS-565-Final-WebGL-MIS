@@ -19,5 +19,5 @@
 <p>perfect specular, lambert, blinn phong/blinn phong microfacet method(if have time I will try different material by using different term like: Cook Torrance, Walter)</p>
 <p>1.4 performance analysis</p>
 <p>Performance contrast of with MIS(multiple importance sampling) and naïve method by comparing the FPS, rendering result, time. </p>
-[![](img/thumb.png)]
+[![](img/pic.png)]
 
