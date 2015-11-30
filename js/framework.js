@@ -8,26 +8,32 @@ var width, height;
     var models = [];
 
     var cameraMat = new THREE.Matrix4();
+    var clock = new THREE.Clock();
+    var iGlobalTime=0.1;
+   
 
     var render = function() {
+        iGlobalTime += clock.getDelta();
+     
         camera.updateMatrixWorld();
         camera.matrixWorldInverse.getInverse(camera.matrixWorld);
         cameraMat.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
         R.deferredRender({
+            iGlobalTime: iGlobalTime ,
             cameraMat: cameraMat,
             projMat: camera.projectionMatrix,
             viewMat: camera.matrixWorldInverse,
-            cameraPos: camera.position, 
+            cameraPos: camera.position,
             models: models
         });
     };
 
     var update = function() {
         controls.update();
+        //iGlobalTime += clock.getDelta();
+        stats.end();
         stats.begin();
         render();
-        gl.finish();
-        stats.end();
         if (!aborted) {
             requestAnimationFrame(update);
         }
@@ -70,6 +76,13 @@ var width, height;
         // TODO: For performance measurements, disable debug mode!
         var debugMode = true;
 
+        canvas = document.getElementById('canvas');
+        renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            preserveDrawingBuffer: debugMode
+        });
+        gl = renderer.context;
+
         if (debugMode) {
             $('#debugmodewarning').css('display', 'block');
             var throwOnGLError = function(err, funcName, args) {
@@ -78,13 +91,6 @@ var width, height;
             };
             gl = WebGLDebugUtils.makeDebugContext(gl, throwOnGLError);
         }
-
-        canvas = document.getElementById('canvas');
-        renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            preserveDrawingBuffer: debugMode
-        });
-        gl = renderer.context;
 
         initExtensions();
 
@@ -105,12 +111,12 @@ var width, height;
             1.0,            // Near plane
             100             // Far plane
         );
-        camera.position.set(-15.5, 1, -1);
-
+        camera.position.set( 20, 15, -8);
+        //camera.position.set(278, 273, -800);
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.enableZoom = true;
-        controls.target.set(0, 4, 0);
+        controls.target.set(0, 0, 0);
         controls.rotateSpeed = 0.3;
         controls.zoomSpeed = 1.0;
         controls.panSpeed = 2.0;
@@ -124,20 +130,7 @@ var width, height;
         });
 
         // CHECKITOUT: Load mesh and textures
-        loadModel('models/sponza/sponza.obj', function(o) {
-            scene.add(o);
-            uploadModel(o, function(m) {
-                // CHECKITOUT: load textures
-                loadTexture('models/sponza/color.jpg').then(function(tex) {
-                    m.colmap = tex;
-                });
-                loadTexture('models/sponza/normal.png').then(function(tex) {
-                    m.normap = tex;
-                });
-                models.push(m);
-            });
-        });
-           loadModel('models/cube.obj', function(o) {
+        loadModel('models/cornelBox.obj', function(o) {
             scene.add(o);
             uploadModel(o, function(m) {
                 // CHECKITOUT: load textures

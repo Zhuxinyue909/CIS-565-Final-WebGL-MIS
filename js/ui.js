@@ -7,10 +7,7 @@ var cfg;
         // TODO: Define config fields and defaults here
         this.debugView = -1;
         this.debugScissor = false;
-        this.specular =50;
-        this.TwoPassBloom = false;
-        this.toon  = false;
-        this.AABBtest = false;
+        this.enableEffect0 = false;
     };
 
     var init = function() {
@@ -30,12 +27,8 @@ var cfg;
         gui.add(cfg, 'debugScissor');
 
         var eff0 = gui.addFolder('EFFECT NAME HERE');
-        eff0.add(cfg, 'toon');
-        eff0.add(cfg, 'specular').min(0).max(60).step(1);
-        eff0.add(cfg, 'TwoPassBloom');
-        eff0.add(cfg, 'AABBtest');
-
-        
+        eff0.open();
+        eff0.add(cfg, 'enableEffect0');
         // TODO: add more effects toggles and parameters here
     };
 
