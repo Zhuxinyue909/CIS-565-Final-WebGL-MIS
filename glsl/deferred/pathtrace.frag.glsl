@@ -1,3 +1,7 @@
+#version 100
+precision highp float;
+precision highp int;
+
 #define SAMPLES 		    24
 #define EPSILON 			0.00001 
 #define GAMMA 				2.2			
@@ -13,7 +17,9 @@
 #define OBJ_SPHERE 2
 #define OBJ_PLANE 3
 
-// iq :
+uniform float iGlobalTime;
+varying vec2 v_uv;
+
 float seed;	//seed initialized in main
 float rnd() { return fract(sin(seed++)*43758.5453123); }
 
@@ -34,6 +40,7 @@ struct Plane { int materialId; vec4 abcd; };
 struct Material { vec3 diff_; vec3 spec_; float roughness_; };
 struct RayHit { vec3 pos; vec3 N; vec3 E; vec2 uv; int materialId; };
 struct Camera { mat3 rotate; vec3 pos; vec3 target; float fovV; float lensSize; float focusDist; };
+struct LightPathNode { vec3 pos_; vec3 N; vec3 L; vec3 Li; int materialId; };
 struct Box { vec3 Bl; vec3 Bh; int materialId; };
     
 // ************ SCENE ***************
@@ -45,7 +52,8 @@ Camera camera;
 //***********************************
 
 
-#define WHITE_DIFFUSE		0
+
+#define WHITE_DIFFUSE			0
 #define MTL_WALL			1
 #define MTL_WALL_BOTTOM		2
 #define MTL_WALL_LEFT		3
@@ -58,7 +66,7 @@ Material materialLibrary[MTL_COUNT];
 void initMaterial() {
     float intensity = 50.0 ;
     INIT_MTL( WHITE_DIFFUSE, vec3( intensity ), vec3( 1.0 ), 1.0 );
-    INIT_MTL( MTL_WALL, vec3( 1.0 ), vec3( 0.3 ), 0.7 );
+    INIT_MTL( MTL_WALL, vec3( 1.0 ), vec3( 0.2 ), 0.7 );
     INIT_MTL( MTL_WALL_BOTTOM, vec3( 0.5, 0.6, 0.8 ), vec3( 0.8 ), 0.3 );
     INIT_MTL( MTL_WALL_LEFT, vec3( 1.0, 0.1, 0.15 ), vec3( 0.2 ), 0.7 );
     INIT_MTL( MTL_WALL_RIGHT, vec3( 0.1, 0.8, 0.1 ), vec3( 0.2 ), 0.7 );
@@ -75,13 +83,10 @@ Material getMaterialFromLibrary( int index ) {
     
     return materialLibrary[0];
 }
-void initLightSphere( float time ) 
-{
-    //change from my previous position
-	spherelight.pos = vec3(2.0+2.*sin(time),5.5-2.*sin(time*0.9),-4.0+2.*cos(time*0.7));
+void initLightSphere( float time ) {
+	spherelight.pos = vec3( 2.0+2.*sin(time*0.9),5.5,-4.0);
 }
-void initScene() 
-{
+void initScene() {
     float time = iGlobalTime;
     
     //init lights
@@ -112,7 +117,7 @@ void initScene()
     //box
     boxes[0].Bl = vec3( 0.2, -1.0, -2.5 );
     boxes[0].Bh = vec3( 2.0, 0.8, -1.6 );
-    boxes[0].materialId = MTL_WALL;
+    boxes[0].materialId = MTL_WALL_LEFT;
     
     r = 1.0;
     sphereGeometry = Sphere( MTL_GLOSSY, vec3( -0.5, 0.0, -3.0 ), r, r*r*4.0*PI  );
@@ -143,7 +148,7 @@ Intersection raySphereIntersection( Ray r, in Sphere sphr) {
             isx.point = r.dir*t0+r.origin;//to Local
             isx.normal= normalize(isx.point-sphr.pos);//normalize!!!!!
             isx.t=t0;
-           isx.hit_obj=OBJ_SPHERE;
+           // isx.hit_obj=OBJ_SPHERE;
             //isx.color=sphr.base_color;
             return isx;
         }
@@ -154,7 +159,7 @@ Intersection raySphereIntersection( Ray r, in Sphere sphr) {
                  isx.point = r.dir*t1+r.origin;
                  isx.normal =normalize(isx.point-sphr.pos);//normalize!!!!!
                  isx.t = t1;
-                 isx.hit_obj=OBJ_SPHERE;
+                 //isx.hit_obj=OBJ_SPHERE;
                  // isx.color=sphr.base_color;
                  return isx;
             }
@@ -221,17 +226,14 @@ Intersection rayCubeIntersection(in Ray r,in Box cube)
        }
 }
 
-Intersection rayPlaneIntersection(Ray ray, Plane plane, out float t ){
-    Intersection isx;
-    float ifparll = dot(ray.dir, plane.abcd.xyz );
-    isx.t=-1.0;
-    if(abs(ifparll)<EPSILON)return isx;
-    else
-    {
-		isx.t = -(dot( ray.origin, plane.abcd.xyz ) + plane.abcd.w)/ifparll;
+bool rayPlaneIntersection( Ray ray, Plane plane, out float t ){
+    float dotVN = dot( ray.dir, plane.abcd.xyz );
+   
+    if ( abs( dotVN ) > EPSILON ) {
+		t = -(dot( ray.origin, plane.abcd.xyz ) + plane.abcd.w)/dotVN;
     }
     
-    return isx;
+    return ( t > 0.0 );
 }
 
 
@@ -263,14 +265,14 @@ vec3 sphericalToCartesian( in float rho, in float phi, in float theta ) {
     return vec3( sinTheta*cos(phi), sinTheta*sin(phi), cos(theta) )*rho;
 }
 
-vec3 sampleHemisphereCosWeighted( in vec3 n, in float rand1, in float rand2 ) {
-    float theta = acos(sqrt(1.0-rand1));
-    float phi = TWO_PI * rand2;
+vec3 sampleHemisphereCosWeighted( in vec3 n, in float Xi1, in float Xi2 ) {
+    float theta = acos(sqrt(1.0-Xi1));
+    float phi = TWO_PI * Xi2;
     return localToWorld( sphericalToCartesian( 1.0, phi, theta ), n );
 }
 
-vec3 randomHemisphereDirection( const vec3 n, in float rand1, in float rand2 ) {
-    vec2 r = vec2(rand1,rand2)*TWO_PI;
+vec3 randomHemisphereDirection( const vec3 n, in float Xi1, in float Xi2 ) {
+    vec2 r = vec2(Xi1,Xi2)*TWO_PI;
 	vec3 dr=vec3(sin(r.x)*vec2(sin(r.y),cos(r.y)),cos(r.x));
 	return dot(dr,n) * dr;
 }
@@ -324,9 +326,9 @@ bool raySceneIntersection( in Ray ray, out RayHit hit, out int objId, out float 
     
     //walls
         for( int i=0; i<5; i++ ){
-        Intersection isxp=rayPlaneIntersection(ray, walls[i]);    
-        if( (isxp.t>0.0)  && (isxp.t < nearest_dist ) ){
-            nearest_dist =isxp.t;
+        float distToPlane;
+        if( rayPlaneIntersection( ray, walls[i], distToPlane ) && (distToPlane > 0.0) && (distToPlane < nearest_dist ) ){
+            nearest_dist = distToPlane;
             hit.pos = ray.origin + ray.dir*nearest_dist;
     		hit.N = walls[i].abcd.xyz;
     		hit.materialId = walls[i].materialId;
@@ -360,10 +362,33 @@ bool raySceneIntersection( in Ray ray, out RayHit hit, out int objId, out float 
     return false;
 }
 
+vec3 blin_microfacet(vec3 N,vec3 wo,vec3 wi, vec3 cdiff) {
+
+   //------ Geometry term-------:
+    vec3 reflect_color=vec3(1.0,1.0,1.0);
+    N=normalize(N);
+    vec3 wh=normalize(wo+wi);
+    float a=abs(dot(wh,N));
+    float M=abs(2.0*dot(N,wh)*dot(N,wo)/dot(wo,wh));
+    float S=abs(2.0*dot(N,wh)*dot(N,wi)/dot(wo,wh));
+    float _G=min(min(M,S),1.0);
 
 
-vec3 brdf_evaluate ( in vec3 N,	 in vec3 E,	 in vec3 L,	float roughness_value,vec3 cDiffuse,vec3 cSpecular ) {
-    return cook_torrance( N, E, L, roughness_value, cDiffuse, cSpecular );
+    //------Distribution term------
+    float exponent=10.0;
+    float _D=( exponent+2.0)/(2.0*PI)*pow(a, exponent);
+
+    float costheta_o=dot(N,wo);//normalize!!!
+    float costheta_i=dot(N,wi);
+    float brdf=_D*_G/(4.0*costheta_o*costheta_i);
+    
+    //----color--calculation--
+    
+    return brdf*cdiff;
+}
+
+vec3 brdf_evaluate ( in vec3 N,	in vec3 wo,in vec3 wi,	float roughness_value,vec3 cDiffuse,vec3 cSpecular ) {
+    return  blin_microfacet( N, wo, wi, cDiffuse );
 }
 
 vec3 brdf_sample (in vec3 N,in vec3 E,out vec3 L,float roughness,vec3 cDiffuse,vec3 cSpecular,float Xi1,float Xi2 ) 
@@ -378,10 +403,10 @@ vec3 brdf_sample (in vec3 N,in vec3 E,out vec3 L,float roughness,vec3 cDiffuse,v
 
 void sampleDirectLight( vec3 hitpoint, out vec3 dir, out float pdf,Ray r ) {
     
-  /*float r=glm::distance2(isx.point,ray.origin);
-    float cos_theta=glm::dot(-ray.direction,isx.normal);
-    return r/(cos_theta*area);*/
-    
+   /*float r=glm::distance2(isx.point,ray.origin);
+
+   float cos_theta=glm::dot(-ray.direction,isx.normal);
+   return r/(cos_theta*area);*/
    	vec3 rlen = spherelight.pos - hitpoint;
     float r2 = dot(rlen, rlen);
     float cos_a_max = sqrt( 1.0 - clamp( spherelight.r*spherelight.r / r2, 0.0, 1.0 ) );
@@ -401,7 +426,6 @@ bool ShadowTest( Ray shadowRay ) {
     float distToHit;
     RayHit tmpHit;
     int tmpObjId;
-    //if intersect with light
     raySceneIntersection( shadowRay, tmpHit, tmpObjId, distToHit );
     
     return ( tmpObjId == 0 );
@@ -424,25 +448,80 @@ vec3 calcDirectLightOnSurface( RayHit hit, Material surfMtl,Ray r ) {
     return Lo;
 }
 
+vec3 Radiance( in Ray ray, float rand1 ) {
+    vec3 color = vec3( 0.0 );
+    Ray currentRay = ray;
+    vec3 weight = vec3( 1.0 );
+    
+    for( int i=0; i<DEPTH ; i++ ) {
+        RayHit hit;
+        int objId;
+        float dist = INFINITY;
+        
+        if( raySceneIntersection( currentRay,hit, objId, dist ) ) {
+            Material surfMtl = getMaterialFromLibrary( hit.materialId );
+            if( hit.materialId == WHITE_DIFFUSE ) {
+                color += (i==0)?surfMtl.diff_:vec3(0.0);
+                break;
+            } 
+            else {
+                vec3 col = weight*calcDirectLightOnSurface( hit, surfMtl,ray);
+                if( i==0 ) {
+            		color += col;
+                } 
+                else {
+                    float value = max(col.x,max(col.y,col.z));
+                    if( value > INDIRECT_CLAMP ) {
+                        col *= INDIRECT_CLAMP/value;
+                    }
+                    color += col;
+                }
+            }
+            
+            
+            vec3 L;
+            vec3 eval = brdf_sample ( hit.N, hit.E, L, surfMtl.roughness_, surfMtl.diff_, surfMtl.spec_, rnd(), rnd() );
+            
+            float dotNL = dot( hit.N, L );
+          
+            
+            weight *= eval*dotNL;
 
-void mainImage( out vec4 fragColor, in vec2 fragCoord )
+          
+            currentRay.origin = hit.pos + hit.N*EPSILON;
+            currentRay.dir = L;
+        } else {
+            break;
+        }
+    }
+        
+    return color;
+}
+
+void main( )
 {
-    seed = iResolution.y * fragCoord.x / iResolution.x + fragCoord.y / iResolution.y;
+
+    vec3 iResolution;
+	iResolution.xy=gl_FragCoord.xy/v_uv.xy;
+    seed = iResolution.y * gl_FragCoord.x / iResolution.x + gl_FragCoord.y / iResolution.y;
     float fov = radians(45.0);
     initMaterial();
     initScene();
 	vec3 accumulatedColor = vec3( 0.0 );
-    vec2 p = -1.0 + 2.0 * (fragCoord.xy) / iResolution.xy;
-    p.x *= iResolution.x/iResolution.y;
+    vec2 p = -1.0 + 2.0 * (gl_FragCoord.xy) / iResolution.xy;
+    p.x *= iResolution.x/iResolution.y*2.0;
+	p.y *= iResolution.y/iResolution.x*2.0;
+	p.y-=0.3;
     Ray ray;
     
 	for( int i=0; i<SAMPLES; i++){
-        initLightSphere(iGlobalTime );
+        initLightSphere( iGlobalTime ); 
         ray = shootRay(p, rnd()/float(SAMPLES), rnd()/float(SAMPLES) );
         accumulatedColor += Radiance( ray, ( float(i) + rnd() )/float(SAMPLES) );
 	}
 	accumulatedColor = accumulatedColor/float(SAMPLES);
     accumulatedColor = pow( accumulatedColor, vec3( 1.0 / GAMMA ) );
    
-	fragColor = vec4( accumulatedColor,1.0 );
+	gl_FragColor = vec4( accumulatedColor,1.0 );
+	
 }
