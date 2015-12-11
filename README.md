@@ -43,8 +43,8 @@ https://youtu.be/TKP8JBcbNN8
 
 <p>2.Gamma correction</p>
 In CRT displays, the light intensity varies nonlinearly with the electron-gun voltage. Altering the input signal by gamma compression can cancel this nonlinearity, such that the output picture has the intended luminance. In this circumstance, use gammma correction to modify the color to make it look much prettier., When the GAMMA powers larger than 1 it makes the shadows darker, while Gamma is  smaller than 1 make dark regions lighter.
-[![](img/gamma0.png)]
-[![](img/gamma1.png)]
+<p><img src="img/gamma0.png" width="400" height="300"><img src="img/gamma1.png" width="400" height="300"></p>
+
 
 
 
