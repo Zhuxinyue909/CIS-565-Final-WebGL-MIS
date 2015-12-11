@@ -19,7 +19,10 @@ The Monte Carlo path tracer attempts to solve the light equations for all the vi
 ![](img/light_brdf_r1.0.png)
 <p>Since the light sources are the most important elements in a rendered scene, for some subset of the rays ωi , select directions such that each ωi intersects a given light source at some point</p>
 <p>BRDF Sampling: </p>
+[![](img/radiance.png)](https://www.youtube.com/watch?v=TKP8JBcbNN8&feature=youtu.be)
 <p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
+<p>the radiance of light when sampling brdf</p>
+https://youtu.be/TKP8JBcbNN8
 <p>the following image shows the pdf when sampling the brdf of each material.
 ![](img/brdf_pdf.png)
 <p>When a BRDF is more specular, sampling only the light’s PDF makes it less likely that a large light will contribute to its color </p>
