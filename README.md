@@ -17,6 +17,8 @@ The Monte Carlo path tracer attempts to solve the light equations for all the vi
 
 When sampling the light, the perfectly specular surface can only be seen when the light ray is perpendicular to surface, so it usually can not be seen when doing the light sample.</p>
 ##Light Sampling: 
+<p>radiance:</p>
+<img src="img/light_radiance.png" width="450" height="300">
 <p>when the radius of light is equals 0.3</p>
 <img src="img/light_brdf_r0.3.png" width="450" height="300">
 <p>when the radius of light is equals 0.5</p>
