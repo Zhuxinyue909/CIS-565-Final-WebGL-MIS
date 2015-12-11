@@ -32,7 +32,9 @@ when grenerating the new ray according to brdf of each material, it the new ray 
 The radiance of brdf sampling:
 <img src="img/brdf_radiance.png" width="450" height="300">
 ###demo of brdf_sampling:
-[![](img/brdf_new.png)(https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be)]
+<a href="https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be">
+<img src="img/light_brdf_r1.0.png" width="450" height="300">
+[![](img/brdf_new.png)](https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be)
 <p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
 <p>the radiance of light when sampling brdf</p>
 https://youtu.be/TKP8JBcbNN8
