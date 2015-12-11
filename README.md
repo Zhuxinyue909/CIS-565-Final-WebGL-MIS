@@ -17,11 +17,12 @@ The Monte Carlo path tracer attempts to solve the light equations for all the vi
 
 When sampling the light, the perfectly specular surface can only be seen when the light ray is perpendicular to surface, so it usually can not be seen when doing the light sample.
 <p>Direct Light Sampling: </p>
-<p>when the radius of light is quals 0.3</p>
+<p>when the radius of light is equals 0.3</p>
+<img src="img/light_brdf_r0.3.png" width="380" height="300">
 ![](img/light_brdf_r0.3.png)
-<p>when the radius of light is quals 0.5</p>
+<p>when the radius of light is equals 0.5</p>
 ![](img/light_brdf_r0.5.png)
-<p>when the radius of light is quals 1.0</p>
+<p>when the radius of light is equals 1.0</p>
 ![](img/light_brdf_r1.0.png)
 <p>Since the light sources are the most important elements in a rendered scene, for some subset of the rays ωi , select directions such that each ωi intersects a given light source at some point</p>
 <p>BRDF Sampling: </p>
