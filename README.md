@@ -11,7 +11,7 @@ The Monte Carlo path tracer attempts to solve the light equations for all the vi
 <p>So In order to reduce the number of the samples that needed to produce the converged scene, we use multiple importace sampling method.</p>
 <p> the bebug secene of this method:</p>
 <p>the material from left to right is blinn-microface(exponent=20),blinn-microface(exponent=10),perfect reflection,blinn-microface(exponent=50),blinn-microface(exponent=100)</p>
-<img src="img/shadertoy.png" width="330" height="200">
+<img src="img/com_color.png" width="330" height="200">
 <p>which is posted on: https://www.shadertoy.com/view/Xs33WM</p>
 <p>only contains the code relatively to the algorithm.
 
@@ -29,9 +29,10 @@ When sampling the light, the perfectly specular surface can only be seen when th
 
 ##BRDF Sampling: 
 when grenerating the new ray according to brdf of each material, it the new ray hit the light scource we can receive the radiance. 
-The following video below shows how the radiance of the 
-[![](img/radiance.png)](https://www.youtube.com/watch?v=TKP8JBcbNN8&feature=youtu.be)
-
+The radiance of brdf sampling:
+<img src="img/brdf_radiance.png" width="450" height="300">
+###demo of brdf_sampling:
+[![](img/brdf_new.png)(https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be)]
 <p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
 <p>the radiance of light when sampling brdf</p>
 https://youtu.be/TKP8JBcbNN8
