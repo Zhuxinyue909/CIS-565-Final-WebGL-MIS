@@ -1,7 +1,7 @@
 ##WebGL Multiple Importance Sampling Path Tracer
 ###xinyue Zhu
 <p>Personal Website: https://seas.upenn.edu/~zhuxiny</p>
-![](img/1.png)
+![](img/thumb.png)
 <p>address: http://zhuxinyue909.github.io/CIS-565-Final-WebGL-MIS/</p>
 <p>Desbug Mode:https://www.shadertoy.com/view/Xs33WM</p>
 Technique:
