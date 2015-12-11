@@ -1,0 +1,2 @@
+1) 	Direct Light sampling: only samples the part that intersect with light
+2) 	BRDF sampling: sample ray directions that have higher contribution to the reflect color(it is not calculate randomly it’s generate according to the brdf)
