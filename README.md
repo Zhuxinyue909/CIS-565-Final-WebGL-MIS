@@ -46,10 +46,14 @@ When sampling the light, the perfectly specular surface can only be seen when th
 When a BRDF is more diffuse, sampling only the BRDF’s PDF makes it less likely that small lights will contribute to its color </p>
 
 
-##power hueristic
-<p>the following image shows the pdf when sampling the brdf of each material.
-![](img/brdf_pdf.png)
-<
+##power heuristic
+<p>Simply taking results from our path reacer using both sampling methods and averaging the results won’t work. Because the variance is additive. So, we need to weight our samples to make sure each sampling method contribute to result properly. 
+
+<p> Two such weighting methods are known as the balance heuristic and the power heuristic</p>
+<p>Get the power heuristic from the pdf we calculate above</p>
+<p>the following image shows the pdf when sampling the brdf of each material.the left is light pdf, the right is brdf pdf.</p>
+<p><img src="img/brdf_pdf.png" width="400" height="300">
+<img src="img/light_pdf.png" width="400" height="300"></p>
 <p>2.Gamma correction</p>
 In CRT displays, the light intensity varies nonlinearly with the electron-gun voltage. Altering the input signal by gamma compression can cancel this nonlinearity, such that the output picture has the intended luminance. In this circumstance, use gammma correction to modify the color to make it look much prettier., When the GAMMA powers larger than 1 it makes the shadows darker, while Gamma is  smaller than 1 make dark regions lighter.
 <p><img src="img/gamma0.png" width="400" height="300"><img src="img/gamma1.png" width="400" height="300"></p>
