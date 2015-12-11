@@ -35,7 +35,7 @@ When sampling the light, the perfectly specular surface can only be seen when th
 <p><a href="https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be">
 <img src="img/brdf_new.png" width="450" height="300"></p>
 
-p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.So in this situation we can see the color of the object in the middle.</p>
+<p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.So in this situation we can see the color of the object in the middle.</p>
 <p>light radius=0.3:</p>
 <p><img src="img/r0.3.png" width="450" height="300"></p>
 <p>light radius=0.5:</p>
