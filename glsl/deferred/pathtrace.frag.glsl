@@ -499,7 +499,8 @@ vec3 mirro_surface (Ray r) {
 	
 	return color;
 }
-vec3 Radiance( in Ray ray, float rand1 ) {
+vec3 Radiance( in Ray ray, float rand1 ) 
+{
     vec3 color = vec3( 0.0 );
     Ray currentRay = ray;
     vec3 weight = vec3( 1.0 );
@@ -519,6 +520,7 @@ vec3 Radiance( in Ray ray, float rand1 ) {
 			else if(hit.materialId ==MTL_MIRRO)
 			{
 			  color+=mirro_surface (ray);//return color;//mirro_surface (ray);return color;
+			 
 			  break;
 			}
             else {
@@ -582,5 +584,5 @@ void main( )
     accumulatedColor = pow( accumulatedColor, vec3( 1.0 / GAMMA ) );
 
 	gl_FragColor = vec4( accumulatedColor,1.0 );
-	
+	//gl_FragColor = vec4(1.0,0.0,0.0,1.0 );
 }

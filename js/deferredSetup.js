@@ -5,6 +5,7 @@
     R.pass_copy = {};
     R.pass_debug = {};
     R.pass_pathtracing = {};
+    R.pass_path_trace_debug={};
     R.lights = [];
 
     R.NUM_GBUFFERS = 4;
@@ -17,6 +18,7 @@
         loadAllShaderPrograms();
         R.pass_copy.setup();
         R.pass_pathtracing.setup();
+        R.pass_path_trace_debug.setup();
     };
 
     // TODO: Edit if you want to change the light initial positions
@@ -88,7 +90,17 @@
         gl_draw_buffers.drawBuffersWEBGL([gl_draw_buffers.COLOR_ATTACHMENT0_WEBGL]);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     };
+  R.pass_path_trace_debug.setup = function() {
+        
+        R.pass_path_trace_debug.fbo = gl.createFramebuffer();
+        R.pass_path_trace_debug.colorTex = createAndBindColorTargetTexture(
+                                   R.pass_path_trace_debug.fbo, gl_draw_buffers.COLOR_ATTACHMENT0_WEBGL);
 
+        
+        abortIfFramebufferIncomplete(R.pass_path_trace_debug.fbo);
+        gl_draw_buffers.drawBuffersWEBGL([gl_draw_buffers.COLOR_ATTACHMENT0_WEBGL]);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    };
     /**
      * Loads all of the shader programs used in the pipeline.
      */
@@ -133,7 +145,13 @@
             p.u_cameraPos = gl.getUniformLocation(p.prog, 'u_cameraPos');
             R.prog_BlinnPhong_PointLight = p;
         });
-        
+         loadDeferredProgram('path_trace_debug', function(p){
+             p.iGlobalTime = gl.getUniformLocation(p.prog, 'iGlobalTime');
+             p.u_intensity= gl.getUniformLocation(p.prog, 'u_intensity');
+             p.u_sphere_pos=gl.getUniformLocation(p.prog,'u_sphere_pos')
+     
+            R.prog_path_trace_debug = p;
+        });
         loadDeferredProgram('pathtrace', function(p){
              p.iGlobalTime = gl.getUniformLocation(p.prog, 'iGlobalTime');
              p.if_gamma= gl.getUniformLocation(p.prog, 'if_gamma');

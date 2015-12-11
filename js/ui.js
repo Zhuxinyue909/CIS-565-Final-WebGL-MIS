@@ -8,6 +8,7 @@ var cfg;
         this.debugView = -1;
         this.intensity=50;
         this.GammaCorrection=true;
+        this.scene2=true;
         this.pos_x=-0.5;
         this.pos_y=0;
         this.pos_z=-3
@@ -34,6 +35,7 @@ var cfg;
         eff0.open();
         eff0.add(cfg, 'intensity').min(0).max(100).step(1);
         eff0.add(cfg, 'GammaCorrection');
+        eff0.add(cfg, 'scene2');
         eff0.add(cfg,'pos_x').min(-1.0).max(4).step(0.2);
         eff0.add(cfg,'pos_y').min(0).max(4).step(0.2);
         eff0.add(cfg,'pos_z').min(-4).max(4).step(0.2);

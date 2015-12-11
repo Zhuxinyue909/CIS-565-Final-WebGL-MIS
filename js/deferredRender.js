@@ -9,7 +9,8 @@
             !R.progClear ||
             !R.prog_BlinnPhong_PointLight ||
             !R.prog_Debug ||
-            !R.prog_pathtrace)) {
+            !R.prog_pathtrace||
+            !R.prog_path_trace_debug)) {
             console.log('waiting for programs to load...');
             return;
         }
@@ -32,10 +33,14 @@
         if (cfg && cfg.debugView >= 0) {
           
             R.pass_debug.render(state);
-        } else {
-           
+        }
+         else if(!cfg.scene2){ 
             R.pass_pathtracing.render(state);
          
+        }
+        else 
+        {
+            R.pass_path_trace_debug.render(state);
         }
     };
 
@@ -88,6 +93,33 @@
     /**
      * 'deferred' pass: Add lighting results for each individual light
      */
+     R.pass_path_trace_debug.render=function(state) {
+        // * Bind R.pass_deferred.fbo to write into for later postprocessing
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+        // * Clear depth to 1.0 and color to black
+        gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clearDepth(1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        gl.enable(gl.BLEND);
+        gl.blendEquation( gl.FUNC_ADD );
+        gl.blendFunc(gl.ONE,gl.ONE);
+
+
+        bindTexturesForLightPass(R.prog_BlinnPhong_PointLight);
+  for (var i = 0; i < R.lights.length; i++) 
+  {
+        // TODO: add a loop here, over the values in R.lights, which sets the
+       bindTexturesForLightPass(R.prog_path_trace_debug);
+       gl.uniform1f(R.prog_path_trace_debug.iGlobalTime, state.iGlobalTime);
+    
+       renderFullScreenQuad(R.prog_path_trace_debug);
+        }
+        
+        // Disable blending so that it doesn't affect other code
+        gl.disable(gl.BLEND);
+    };
     R.pass_pathtracing.render = function(state) {
         // * Bind R.pass_deferred.fbo to write into for later postprocessing
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
