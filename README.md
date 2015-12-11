@@ -30,10 +30,10 @@ When sampling the light, the perfectly specular surface can only be seen when th
 ##BRDF Sampling: 
 <p>when grenerating the new ray according to brdf of each material, it the new ray hit the light scource we can receive the radiance.</p> 
 <p>The radiance of brdf sampling:<p>
-<img src="img/brdf_radiance.png" width="450" height="300">
-###demo of brdf sampling:
-<a href="https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be">
-<img src="img/brdf_new.png" width="450" height="300">
+<p><img src="img/brdf_radiance.png" width="450" height="300"></p>
+###demo of brdf sampling with color:
+<p><a href="https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be">
+<img src="img/brdf_new.png" width="450" height="300"></p>
 
 <p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
 <p>the radiance of light when sampling brdf</p>
