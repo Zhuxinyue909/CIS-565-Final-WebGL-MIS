@@ -3,6 +3,8 @@
 <p>Personal Website: https://seas.upenn.edu/~zhuxiny
 [![](img/xxx.png)]
 Technique:
+1.using multiple importance sampling
+2.materials
 
 
 
