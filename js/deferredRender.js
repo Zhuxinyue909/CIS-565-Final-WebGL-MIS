@@ -107,6 +107,14 @@
         // TODO: add a loop here, over the values in R.lights, which sets the
        bindTexturesForLightPass(R.prog_pathtrace);
        gl.uniform1f(R.prog_pathtrace.iGlobalTime, state.iGlobalTime);
+       gl.uniform3f(R.prog_pathtrace.u_sphere_pos,cfg.pos_x,cfg.pos_y,cfg.pos_z);
+       gl.uniform1f(R.prog_pathtrace.u_intensity,cfg.intensity);
+       if(cfg.GammaCorrection){
+                   gl.uniform1f(R.prog_pathtrace.if_gamma,1.0);
+       }
+       else
+        gl.uniform1f(R.prog_pathtrace.if_gamma,-1.0);
+       
         renderFullScreenQuad(R.prog_pathtrace);
         }
         

@@ -136,6 +136,9 @@
         
         loadDeferredProgram('pathtrace', function(p){
              p.iGlobalTime = gl.getUniformLocation(p.prog, 'iGlobalTime');
+             p.if_gamma= gl.getUniformLocation(p.prog, 'if_gamma');
+             p.u_intensity= gl.getUniformLocation(p.prog, 'u_intensity');
+             p.u_sphere_pos=gl.getUniformLocation(p.prog,'u_sphere_pos')
             // p.iResolution = gl.getUniformLocation(p.prog, 'iResolution');
                 // Create an object to hold info about this shader program
             R.prog_pathtrace = p;

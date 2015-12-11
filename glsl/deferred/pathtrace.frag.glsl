@@ -4,7 +4,7 @@ precision highp int;
 
 #define SAMPLES 		    24
 #define EPSILON 			0.00001 
-#define GAMMA 				2.2			
+#define GAMMA 				3.2			
 #define DEPTH		        5
 #define INDIRECT_CLAMP 		20.0	
 #define INFINITY            9999.9
@@ -16,9 +16,13 @@ precision highp int;
 #define OBJ_CUBE 1
 #define OBJ_SPHERE 2
 #define OBJ_PLANE 3
-
+uniform float if_gamma;
+uniform float u_intensity;
 uniform float iGlobalTime;
+uniform vec3  u_sphere_pos;
 varying vec2 v_uv;
+
+
 
 float seed;	//seed initialized in main
 float rnd() { return fract(sin(seed++)*43758.5453123); }
@@ -59,12 +63,14 @@ Camera camera;
 #define MTL_WALL_LEFT		3
 #define MTL_WALL_RIGHT		4
 #define MTL_GLOSSY	        5
-#define MTL_COUNT			6
+#define MTL_MIRRO	        6
+#define MTL_COUNT			7
 
 Material materialLibrary[MTL_COUNT];
 #define INIT_MTL(i,diff,spec,roughness) { materialLibrary[i].diff_=diff; materialLibrary[i].spec_=spec; materialLibrary[i].roughness_=roughness; }
 void initMaterial() {
-    float intensity = 50.0 ;
+   // float intensity = 50.0 ;
+   float intensity = u_intensity ;
     INIT_MTL( WHITE_DIFFUSE, vec3( intensity ), vec3( 1.0 ), 1.0 );
     INIT_MTL( MTL_WALL, vec3( 1.0 ), vec3( 0.2 ), 0.7 );
     INIT_MTL( MTL_WALL_BOTTOM, vec3( 0.5, 0.6, 0.8 ), vec3( 0.8 ), 0.3 );
@@ -83,6 +89,22 @@ Material getMaterialFromLibrary( int index ) {
     
     return materialLibrary[0];
 }
+float iSphere( in vec3 ro, in vec3 rd, in vec4 sph ) {
+    vec3 oc = ro - sph.xyz;
+    float b = dot(oc, rd);
+    float c = dot(oc, oc) - sph.w * sph.w;
+    float h = b * b - c;
+    if (h < 0.0) return -1.0;
+
+	float s = sqrt(h);
+	float t1 = -b - s;
+	float t2 = -b + s;
+	
+	return t1 < 0.0 ? t2 : t1;
+}
+float iPlane( in vec3 ro, in vec3 rd, in vec4 pla ) {
+    return (-pla.w - dot(pla.xyz,ro)) / dot( pla.xyz, rd );
+}
 void initLightSphere( float time ) {
 	spherelight.pos = vec3( 2.0+2.*sin(time*0.9),5.5,-4.0);
 }
@@ -91,6 +113,7 @@ void initScene() {
     
     //init lights
     float r = 0.5;
+	float r1=0.2;
     spherelight = Sphere( WHITE_DIFFUSE, vec3( 2.0, 5.5, -4.0 ), r, r*r*4.0*PI );
 
     //init walls
@@ -120,7 +143,8 @@ void initScene() {
     boxes[0].materialId = MTL_WALL_LEFT;
     
     r = 1.0;
-    sphereGeometry = Sphere( MTL_GLOSSY, vec3( -0.5, 0.0, -3.0 ), r, r*r*4.0*PI  );
+   // sphereGeometry = Sphere( MTL_GLOSSY, vec3( -0.5, 0.0, -3.0 ), r, r*r*4.0*PI  );
+   sphereGeometry = Sphere( MTL_MIRRO, u_sphere_pos, r, r*r*4.0*PI  );
 }
 
 
@@ -320,7 +344,7 @@ bool raySceneIntersection( in Ray ray, out RayHit hit, out int objId, out float 
         nearest_dist = isx1.t;
         hit.pos =isx1.point;
         hit.N = isx1.normal;
-        hit.materialId = MTL_GLOSSY;
+        hit.materialId = MTL_MIRRO;
         objId = 1;
     }
     
@@ -387,15 +411,15 @@ vec3 blin_microfacet(vec3 N,vec3 wo,vec3 wi, vec3 cdiff) {
     return brdf*cdiff;
 }
 
-vec3 brdf_evaluate ( in vec3 N,	in vec3 wo,in vec3 wi,	float roughness_value,vec3 cDiffuse,vec3 cSpecular ) {
+vec3 brdf_evaluate ( in vec3 N,	in vec3 wo,in vec3 wi,	int matId, vec3 cDiffuse,vec3 cSpecular ) {
     return  blin_microfacet( N, wo, wi, cDiffuse );
 }
 
-vec3 brdf_sample (in vec3 N,in vec3 E,out vec3 L,float roughness,vec3 cDiffuse,vec3 cSpecular,float Xi1,float Xi2 ) 
+vec3 brdf_sample (in vec3 N,in vec3 E,out vec3 L,int matId,vec3 cDiffuse,vec3 cSpecular,float Xi1,float Xi2 ) 
 {
-    L = sampleHemisphereCosWeighted( N, Xi1, Xi2 );
-    
-    vec3 brdf = brdf_evaluate( N, E, L, roughness, cDiffuse, cSpecular ); 
+    if(matId<5)L = sampleHemisphereCosWeighted( N, Xi1, Xi2 );
+    else L=reflect(normalize (E), N);
+    vec3 brdf = brdf_evaluate( N, E, L, matId, cDiffuse, cSpecular ); 
     float pdf = ( clamp( dot( N, L ), 0.0, 1.0 ) ) / PI;
     
     return brdf*pdf;
@@ -441,29 +465,62 @@ vec3 calcDirectLightOnSurface( RayHit hit, Material surfMtl,Ray r ) {
     
     if ( dot( wi, hit.N ) > 0.0 ) {
         if ( ShadowTest( Ray( hit.pos + hit.N*EPSILON, wi ) ) ) {
-    		vec3 brdf = brdf_evaluate( hit.N, hit.E, wi, surfMtl.roughness_, surfMtl.diff_, surfMtl.spec_ );
+    		vec3 brdf = brdf_evaluate( hit.N, hit.E, wi, hit.materialId, surfMtl.diff_, surfMtl.spec_ );
     		Lo += (Li*brdf)/pWi;
         }
     }   
     return Lo;
 }
-
+vec3 mirro_surface (Ray r) {
+	vec3 color = vec3 (0);
+	
+	float depth = 0.0;
+	
+	float l = 0.0;
+	
+	for (int i = 0; i < 3; i++) {
+		RayHit h;int objId;float dist;
+		//raySceneIntersection (r,h, objId, dist);
+		if(!raySceneIntersection (r,h, objId, dist))
+		return vec3(0.0);
+		else{
+		float c = dot (h.N, r.dir);
+		depth += (1.0 / 100000.0) + dist;
+		
+		r = Ray (h.pos + h.N * 0.0001, reflect (normalize (r.dir), h.N));
+		
+		float d = 1.0 / (depth * depth);
+		
+		Material surfMtl = getMaterialFromLibrary( h.materialId );
+		vec3 hit_color=surfMtl.diff_;
+		color = (color + c*c*d) * (1.0 - hit_color * d * 100000.0)/20.0;
+		}
+	}
+	
+	return color;
+}
 vec3 Radiance( in Ray ray, float rand1 ) {
     vec3 color = vec3( 0.0 );
     Ray currentRay = ray;
     vec3 weight = vec3( 1.0 );
     
-    for( int i=0; i<DEPTH ; i++ ) {
+    for( int i=0; i<1 ; i++ ) 
+	{
         RayHit hit;
         int objId;
         float dist = INFINITY;
         
         if( raySceneIntersection( currentRay,hit, objId, dist ) ) {
             Material surfMtl = getMaterialFromLibrary( hit.materialId );
-            if( hit.materialId == WHITE_DIFFUSE ) {
+           if( hit.materialId == WHITE_DIFFUSE ) {
                 color += (i==0)?surfMtl.diff_:vec3(0.0);
                 break;
             } 
+			else if(hit.materialId ==MTL_MIRRO)
+			{
+			  color+=mirro_surface (ray);//return color;//mirro_surface (ray);return color;
+			  break;
+			}
             else {
                 vec3 col = weight*calcDirectLightOnSurface( hit, surfMtl,ray);
                 if( i==0 ) {
@@ -480,7 +537,7 @@ vec3 Radiance( in Ray ray, float rand1 ) {
             
             
             vec3 L;
-            vec3 eval = brdf_sample ( hit.N, hit.E, L, surfMtl.roughness_, surfMtl.diff_, surfMtl.spec_, rnd(), rnd() );
+            vec3 eval = brdf_sample ( hit.N, hit.E, L, hit.materialId, surfMtl.diff_, surfMtl.spec_, rnd(), rnd() );
             
             float dotNL = dot( hit.N, L );
           
@@ -493,9 +550,10 @@ vec3 Radiance( in Ray ray, float rand1 ) {
         } else {
             break;
         }
-    }
-        
+   
+        }
     return color;
+
 }
 
 void main( )
@@ -509,8 +567,8 @@ void main( )
     initScene();
 	vec3 accumulatedColor = vec3( 0.0 );
     vec2 p = -1.0 + 2.0 * (gl_FragCoord.xy) / iResolution.xy;
-    p.x *= iResolution.x/iResolution.y*2.0;
-	p.y *= iResolution.y/iResolution.x*2.0;
+    p.x *= iResolution.x/iResolution.y*1.7;
+	p.y *= iResolution.y/iResolution.x*1.7;
 	p.y-=0.3;
     Ray ray;
     
@@ -520,8 +578,9 @@ void main( )
         accumulatedColor += Radiance( ray, ( float(i) + rnd() )/float(SAMPLES) );
 	}
 	accumulatedColor = accumulatedColor/float(SAMPLES);
+	if(if_gamma>0.0)
     accumulatedColor = pow( accumulatedColor, vec3( 1.0 / GAMMA ) );
-   
+
 	gl_FragColor = vec4( accumulatedColor,1.0 );
 	
 }

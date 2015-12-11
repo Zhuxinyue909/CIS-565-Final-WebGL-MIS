@@ -6,7 +6,11 @@ var cfg;
     var Cfg = function() {
         // TODO: Define config fields and defaults here
         this.debugView = -1;
-        this.debugScissor = false;
+        this.intensity=50;
+        this.GammaCorrection=true;
+        this.pos_x=-0.5;
+        this.pos_y=0;
+        this.pos_z=-3
         this.enableEffect0 = false;
     };
 
@@ -24,11 +28,15 @@ var cfg;
             '4 Normal map':      4,
             '5 Surface normal':  5
         });
-        gui.add(cfg, 'debugScissor');
+       // gui.add(cfg, 'debugScissor');
 
         var eff0 = gui.addFolder('EFFECT NAME HERE');
         eff0.open();
-        eff0.add(cfg, 'enableEffect0');
+        eff0.add(cfg, 'intensity').min(0).max(100).step(1);
+        eff0.add(cfg, 'GammaCorrection');
+        eff0.add(cfg,'pos_x').min(-1.0).max(4).step(0.2);
+        eff0.add(cfg,'pos_y').min(0).max(4).step(0.2);
+        eff0.add(cfg,'pos_z').min(-4).max(4).step(0.2);
         // TODO: add more effects toggles and parameters here
     };
 
