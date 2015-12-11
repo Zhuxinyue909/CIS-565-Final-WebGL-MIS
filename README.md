@@ -54,7 +54,7 @@ When a BRDF is more diffuse, sampling only the BRDF’s PDF makes it less likely
 <p>the following image shows the pdf when sampling the brdf of each material.the left is light pdf, the right is brdf pdf.</p>
 <p><img src="img/brdf_pdf.png" width="400" height="250">
 <img src="img/light_pdf.png" width="400" height="250"></p>
-<p>2.Gamma correction</p>
+#<p>2.Gamma correction</p>
 In CRT displays, the light intensity varies nonlinearly with the electron-gun voltage. Altering the input signal by gamma compression can cancel this nonlinearity, such that the output picture has the intended luminance. In this circumstance, use gammma correction to modify the color to make it look much prettier., When the GAMMA powers larger than 1 it makes the shadows darker, while Gamma is  smaller than 1 make dark regions lighter.
 <p><img src="img/gamma0.png" width="400" height="300"><img src="img/gamma1.png" width="400" height="300"></p>
 
