@@ -19,11 +19,10 @@ When sampling the light, the perfectly specular surface can only be seen when th
 <p>Direct Light Sampling: </p>
 <p>when the radius of light is equals 0.3</p>
 <img src="img/light_brdf_r0.3.png" width="450" height="300">
-![](img/light_brdf_r0.3.png)
 <p>when the radius of light is equals 0.5</p>
-![](img/light_brdf_r0.5.png)
+<img src="img/light_brdf_r0.5.png" width="450" height="300">
 <p>when the radius of light is equals 1.0</p>
-![](img/light_brdf_r1.0.png)
+<img src="img/light_brdf_r1.0.png" width="450" height="300">
 <p>Since the light sources are the most important elements in a rendered scene, for some subset of the rays ωi , select directions such that each ωi intersects a given light source at some point</p>
 <p>BRDF Sampling: </p>
 [![](img/radiance.png)](https://www.youtube.com/watch?v=TKP8JBcbNN8&feature=youtu.be)
