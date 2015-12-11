@@ -8,8 +8,9 @@ Technique:
 1.multiple importance sampling
 The Monte Carlo path tracer attempts to solve the light equations for all the visible points in the scene which ask people to recursively trace the ray until it hits the depth. However it may take a long time to converge to a usable image. To optimize the monte carlo path tracer poeple often use parallelization and multiple importance sampling methods. 
 <p>BRDF:A function that evaluates the energy emitted along ray given the intersection point of the scene and the direction from which the incoming light emits which is entirely dependent on the attributes of the material sampled at the intersection point. </p>
-<p>So In order to reduce the number of the samples that needed to produce the converged scene, we use multiple importace sampling method.</p> 
-<p><img scr="img/shadertoy.png" width="330" height="200"></p>
+<p>So In order to reduce the number of the samples that needed to produce the converged scene, we use multiple importace sampling method.</p>
+![](img/shadertoy.png)
+<img scr="img/shadertoy.png" width="330" height="200">
 <p>These following are debug view posted on: https://www.shadertoy.com/view/Xs33WM</p>
 
 
