@@ -42,8 +42,8 @@ When sampling the light, the perfectly specular surface can only be seen when th
 <p><img src="img/r0.5.png" width="450" height="300"></p>
 <p>light radius=1.0:</p>
 <p><img src="img/r1.0.png" width="450" height="300"></p>
-<p>When a BRDF is more specular, sampling only the light’s PDF makes it less likely that a large light will contribute to its color </p>
-<p>When a BRDF is more diffuse, sampling only the BRDF’s PDF makes it less likely that small lights will contribute to its color </p>
+<p>When a BRDF is more specular, sampling only the light’s PDF makes it less likely that a large light will contribute to its color 
+When a BRDF is more diffuse, sampling only the BRDF’s PDF makes it less likely that small lights will contribute to its color </p>
 
 
 ##power hueristic
