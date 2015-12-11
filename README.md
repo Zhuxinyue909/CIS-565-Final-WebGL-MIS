@@ -1,7 +1,7 @@
 ##WebGL Multiple Importance Sampling Path Tracer
 ###xinyue Zhu
 <p>Personal Website: https://seas.upenn.edu/~zhuxiny</p>
-[![](img/1.png)]
+![](img/1.png)
 <p>address: http://zhuxinyue909.github.io/CIS-565-Final-WebGL-MIS/</p>
 Technique:
 1.multiple importance sampling
@@ -9,9 +9,13 @@ The Monte Carlo path tracer attempts to solve the light equations for all the vi
 <p>BRDF:A function that evaluates the energy emitted along ray given the intersection point of the scene and the direction from which the incoming light emits which is entirely dependent on the attributes of the material sampled at the intersection point. </p>
 <p>So In order to reduce the number of the samples that needed to produce the converged scene, we use multiple importace sampling method.</p> 
 <p>Direct Light Sampling: </p>
-[![](img/light_brdf_r0.5.png)]
-[![](img/light_brdf_r0.3.png)]
-[![](img/light_brdf_r1.0.png)]
+<p>the following is the debug scene, the material from left to right is blinn-microface(exponent=20),blinn-microface(exponent=10),perfect reflection,blinn-microface(exponent=50),blinn-microface(exponent=100)</p>
+<p>when the radius of light is quals 0.3</p>
+![](img/light_brdf_r0.3.png)
+<p>when the radius of light is quals 0.5</p>
+![](img/light_brdf_r0.5.png)
+<p>when the radius of light is quals 1.0</p>
+![](img/light_brdf_r1.0.png)
 <p>Since the light sources are the most important elements in a rendered scene, for some subset of the rays ωi , select directions such that each ωi intersects a given light source at some point</p>
 <p>BRDF Sampling: </p>
 <p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
