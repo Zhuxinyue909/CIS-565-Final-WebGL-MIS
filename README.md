@@ -26,7 +26,10 @@ When sampling the light, the perfectly specular surface can only be seen when th
 <p>Since the light sources are the most important elements in a rendered scene, for some subset of the rays ωi , select directions such that each ωi intersects a given light source at some point</p>
 
 ##BRDF Sampling: 
+when grenerating the new ray according to brdf of each material, it the new ray hit the light scource we can receive the radiance. 
+The following video below shows how the radiance of the 
 [![](img/radiance.png)](https://www.youtube.com/watch?v=TKP8JBcbNN8&feature=youtu.be)
+
 <p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
 <p>the radiance of light when sampling brdf</p>
 https://youtu.be/TKP8JBcbNN8
