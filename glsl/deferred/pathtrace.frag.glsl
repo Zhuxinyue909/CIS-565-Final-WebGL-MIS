@@ -428,7 +428,6 @@ vec3 brdf_sample (in vec3 N,in vec3 E,out vec3 L,int matId,vec3 cDiffuse,vec3 cS
 void sampleDirectLight( vec3 hitpoint, out vec3 dir, out float pdf,Ray r ) {
     
    /*float r=glm::distance2(isx.point,ray.origin);
-
    float cos_theta=glm::dot(-ray.direction,isx.normal);
    return r/(cos_theta*area);*/
    	vec3 rlen = spherelight.pos - hitpoint;
