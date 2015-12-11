@@ -4,6 +4,9 @@
 ![](img/thumb.png)
 <p>address: http://zhuxinyue909.github.io/CIS-565-Final-WebGL-MIS/</p>
 <p>Desbug Mode:https://www.shadertoy.com/view/Xs33WM</p>
+<a href="https://youtu.be/u9YPjqNWi4M">
+<img src="img/video_thumb.png" width="330" height="200">
+</a></p>
 Technique:
 #1.multiple importance sampling
 The Monte Carlo path tracer attempts to solve the light equations for all the visible points in the scene which ask people to recursively trace the ray until it hits the depth. However it may take a long time to converge to a usable image. To optimize the monte carlo path tracer poeple often use parallelization and multiple importance sampling methods. 
@@ -57,7 +60,9 @@ When a BRDF is more diffuse, sampling only the BRDF’s PDF makes it less likely
 #<p>2.Gamma correction</p>
 In CRT displays, the light intensity varies nonlinearly with the electron-gun voltage. Altering the input signal by gamma compression can cancel this nonlinearity, such that the output picture has the intended luminance. In this circumstance, use gammma correction to modify the color to make it look much prettier., When the GAMMA powers larger than 1 it makes the shadows darker, while Gamma is  smaller than 1 make dark regions lighter.
 <p><img src="img/gamma0.png" width="400" height="300"><img src="img/gamma1.png" width="400" height="300"></p>
-
+#performance analysis
+<p>anti-aliasing</p>
+<p><img src="img/anti1.png" width="500" height="400">
 
 
 
