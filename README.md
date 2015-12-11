@@ -16,7 +16,7 @@ The Monte Carlo path tracer attempts to solve the light equations for all the vi
 <p>only contains the code relatively to the algorithm.
 
 When sampling the light, the perfectly specular surface can only be seen when the light ray is perpendicular to surface, so it usually can not be seen when doing the light sample.
-<p>Direct Light Sampling: </p>
+##Light Sampling: 
 <p>when the radius of light is equals 0.3</p>
 <img src="img/light_brdf_r0.3.png" width="450" height="300">
 <p>when the radius of light is equals 0.5</p>
@@ -24,8 +24,9 @@ When sampling the light, the perfectly specular surface can only be seen when th
 <p>when the radius of light is equals 1.0</p>
 <img src="img/light_brdf_r1.0.png" width="450" height="300">
 <p>Since the light sources are the most important elements in a rendered scene, for some subset of the rays ωi , select directions such that each ωi intersects a given light source at some point</p>
-<p>BRDF Sampling: </p>
-[<img src="img/light_brdf_r1.0.png" width="450" height="300">](https://www.youtube.com/watch?v=TKP8JBcbNN8&feature=youtu.be)
+
+##BRDF Sampling: 
+[![](img/radiance.png)](https://www.youtube.com/watch?v=TKP8JBcbNN8&feature=youtu.be)
 <p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
 <p>the radiance of light when sampling brdf</p>
 https://youtu.be/TKP8JBcbNN8
