@@ -35,15 +35,21 @@ When sampling the light, the perfectly specular surface can only be seen when th
 <p><a href="https://www.youtube.com/watch?v=f-D2cRWvGIE&feature=youtu.be">
 <img src="img/brdf_new.png" width="450" height="300"></p>
 
-<p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.</p>
-<p>the radiance of light when sampling brdf</p>
-https://youtu.be/TKP8JBcbNN8
-<p>the following image shows the pdf when sampling the brdf of each material.
-![](img/brdf_pdf.png)
+p>Sample ray directions that have a higher contribution to the color reflected along ωo, which is extremely useful in the case where the BRDF has a very narrow set of contributing rays like perfectly reflection case.So in this situation we can see the color of the object in the middle.</p>
+<p>light radius=0.3:</p>
+<p><img src="img/r0.3.png" width="450" height="300"></p>
+<p>light radius=0.5:</p>
+<p><img src="img/r0.5.png" width="450" height="300"></p>
+<p>light radius=1.0:</p>
+<p><img src="img/r1.0.png" width="450" height="300"></p>
 <p>When a BRDF is more specular, sampling only the light’s PDF makes it less likely that a large light will contribute to its color </p>
 <p>When a BRDF is more diffuse, sampling only the BRDF’s PDF makes it less likely that small lights will contribute to its color </p>
 
 
+##power hueristic
+<p>the following image shows the pdf when sampling the brdf of each material.
+![](img/brdf_pdf.png)
+<
 <p>2.Gamma correction</p>
 In CRT displays, the light intensity varies nonlinearly with the electron-gun voltage. Altering the input signal by gamma compression can cancel this nonlinearity, such that the output picture has the intended luminance. In this circumstance, use gammma correction to modify the color to make it look much prettier., When the GAMMA powers larger than 1 it makes the shadows darker, while Gamma is  smaller than 1 make dark regions lighter.
 <p><img src="img/gamma0.png" width="400" height="300"><img src="img/gamma1.png" width="400" height="300"></p>
