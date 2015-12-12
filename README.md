@@ -65,6 +65,9 @@ In CRT displays, the light intensity varies nonlinearly with the electron-gun vo
 <p><img src="img/anti1.png" width="500" height="400">
 <p>when the objects increase the tiem increase,the base time is rendering 5 squares.
 <p><img src="img/a2.png" width="200" height="100">
+###Refrence
+1.Adam's lecture
+2.pbrt
 
 
 
